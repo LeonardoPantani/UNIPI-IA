@@ -29,7 +29,7 @@ def extract_feature_url_entropy(url: str) -> float:
 def extract_feature_num_digits(url: str) -> int:
     return sum(c.isdigit() for c in url)
 
-def extract_feature_letter_count(url: str) -> int:
+def extract_feature_num_letters(url: str) -> int:
     return sum(c.isalpha() for c in url)
 
 def extract_feature_url_length(url: str) -> int:
@@ -49,10 +49,10 @@ def extract_feature_num_percent20(url: str) -> int:
 def extract_feature_num_at_signs(url: str) -> int:
     return url.count('@')
 
-def extract_feature_hashttp(url: str) -> int:
+def extract_feature_has_http(url: str) -> int:
     return 1 if url.lower().startswith('http://') else 0
 
-def extract_feature_hashttps(url: str) -> int:
+def extract_feature_has_https(url: str) -> int:
     return 1 if url.lower().startswith('https://') else 0
 
 def extract_feature_dot_number(url: str) -> int:
