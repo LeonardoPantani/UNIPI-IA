@@ -67,10 +67,18 @@ def extract_feature_directory_num(url: str) -> int:
     path_parts = [p for p in path.split('/') if p]
     return len(path_parts)
 
+# Corretta: Conta i domini "embeddati" contando i domini e non gli schemi
 def extract_feature_embed_domain_number(url: str) -> int:
-    pattern = r'(?:http://|https://)'
-    matches = re.findall(pattern, url.lower())
-    return len(matches)
+    parsed_url = urlparse(url)
+    # Considero solo la parte del percorso e della query
+    path_and_query = parsed_url.path
+    if parsed_url.query:
+        path_and_query += "?" + parsed_url.query
+    
+    # Trovo tutti i domini "embeddati" usando una regex
+    embedded_domains = re.findall(r'(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}', path_and_query)
+    
+    return len(embedded_domains)
 
 def extract_feature_suspiciousurl(url: str) -> int:
     suspicious_words = [
@@ -95,22 +103,27 @@ def extract_feature_count_equal(url: str) -> int:
     return url.count('=')
 
 def extract_feature_is_shortened(url: str) -> int:
-    return int(bool(re.search(r'bit\.ly|t\.co|ow\.ly', url)))
+    return int(bool(re.search(r'bit\.ly|goo\.gl|shorte\.st|go2l\.ink|x\.co|ow\.ly|t\.co|tinyurl|tr\.im|is\.gd|cli\.gs|yfrog\.com|migre\.me|ff\.im|tiny\.cc|url4\.eu|twit\.ac|su\.pr|twurl\.nl|snipurl\.com|short\.to|BudURL\.com|ping\.fm|post\.ly|Just\.as|bkite\.com|snipr\.com|fic\.kr|loopt\.us|doiop\.com|short\.ie|kl\.am|wp\.me|rubyurl\.com|om\.ly|to\.ly|bit\.do|t\.co|lnkd\.in|db\.tt|qr\.ae|adataset\.ly|goo\.gl|bitly\.com|cur\.lv|tinyurl\.com|ow\.ly|bit\.ly|ity\.im|q\.gs|is\.gd|po\.st|bc\.vc|twitthis\.com|u\.to|j\.mp|buzurl\.com|cutt\.us|u\.bb|yourls\.org|x\.co|prettylinkpro\.com|scrnch\.me|filoops\.info|vzturl\.com|qr\.net|1url\.com|tweez\.me|v\.gd|tr\.im|link\.zip\.net', url)))
 
 def extract_feature_hostname_length(url: str) -> int:
     parsed = urlparse(url)
     return len(parsed.netloc)
 
+# Corretta: Calcola la lunghezza del primo segmento del path
 def extract_feature_first_directory_length(url: str) -> int:
     parsed = urlparse(url)
-    if parsed.path.startswith('/'):
-        scheme_part = f"{parsed.scheme}://"
-        start_of_path_index = url.find('/', len(scheme_part + parsed.netloc))
-        if start_of_path_index == -1:
-            return 0
-        else:
-            return start_of_path_index
-    return 0
+    path = parsed.path
+    if not path or path == '/':
+        return 0
+
+    segments = path.split('/')
+    # Rimuovi segmenti vuoti causati da slash multipli o slash finali
+    segments = [s for s in segments if s]
+
+    if not segments:
+        return 0
+    
+    return len(segments[0])
 
 def extract_feature_top_level_domain_length(url: str) -> int:
     parsed = urlparse(url)
@@ -121,3 +134,11 @@ def extract_feature_top_level_domain_length(url: str) -> int:
     parts = hostname.split('.')
     tld = parts[-1]
     return len(tld)
+
+# Nuova funzione: Calcola il numero di sottodomini
+def extract_feature_num_subdomains(url: str) -> int:
+    parsed_url = urlparse(url)
+    hostname = parsed_url.netloc
+    # Rimuovi 'www.' se presente per evitare di contarlo come sottodominio
+    hostname = hostname.lstrip('www.')
+    return hostname.count('.')

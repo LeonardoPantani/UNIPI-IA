@@ -112,7 +112,7 @@ def evaluate_model_with_cv(x_train, y_train, classifier, x_test=None, y_test=Non
         cv_results["test_auc_score"] = auc_score
         cv_results["test_confusion_matrix"] = conf_matrix
 
-    return cv_results if need_results else None
+    return cv_results if need_results else classifier
 
 
 def balance_data_undersample_benign(x_train, y_train):
