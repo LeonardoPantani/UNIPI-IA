@@ -1,6 +1,7 @@
 import collections
 from collections import Counter
 from imblearn.under_sampling import RandomUnderSampler
+from imblearn.over_sampling import RandomOverSampler
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -123,6 +124,20 @@ def balance_data_undersample_benign(x_train, y_train):
     rus = RandomUnderSampler(sampling_strategy=undersampling_strategy, random_state=42)
     x_train_resampled, y_train_resampled = rus.fit_resample(x_train, y_train)
     return x_train_resampled, y_train_resampled
+
+def balance_data_undersample_plus_oversample(x_train, y_train):
+
+    class_counts = Counter(y_train)
+    target_count = max(class_counts.values())
+    undersampling_strategy = {label: min(count, target_count) for label, count in class_counts.items()}
+    rus = RandomUnderSampler(sampling_strategy=undersampling_strategy, random_state=42)
+    x_train_undersampled, y_train_undersampled = rus.fit_resample(x_train, y_train)
+ 
+    oversampling_strategy = {label: target_count for label in class_counts.keys()}
+    ros = RandomOverSampler(sampling_strategy=oversampling_strategy, random_state=42)
+    x_train_balanced, y_train_balanced = ros.fit_resample(x_train_undersampled, y_train_undersampled)
+    return x_train_balanced, y_train_balanced
+
 
 
 def remove_outliers(df, features_to_clean=['url_entropy', 'num_digits', 'dot_number', 'directory_num', 'hostname_length', 'top_level_domain_length', 'num_letters']):
