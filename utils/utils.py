@@ -18,7 +18,7 @@ def printInfo(type, data):
         print(" {} class: {} ({:.2f}% of total)".format(k, v, percentages[k]*100))
 
 
-def evaluate_model_with_cv(x_train, y_train, classifier, x_test=None, y_test=None, target_names=['benign', 'phishing', 'defacement', 'malware'], k=5, need_results=False):
+def evaluate_model_with_cv(x_train, y_train, classifier, x_test=None, y_test=None, target_names=['benign', 'phishing', 'defacement', 'malware'], k=10, need_results=False):
     """
     Perform Stratified K-Fold Cross Validation and evaluate the model.
 
@@ -29,7 +29,7 @@ def evaluate_model_with_cv(x_train, y_train, classifier, x_test=None, y_test=Non
     - x_test: (Optional) Features for testing.
     - y_test: (Optional) Labels for testing.
     - target_names: (Optional) List containing list of classes' names, default ['benign', 'phishing', 'defacement', 'malware']
-    - k: (Optional) Number of folds, default 5
+    - k: (Optional) Number of folds, default 10
     - need_results: (Optional) Set this to True if results as dictionary are needed.
 
     Returns (if need_result=True):
