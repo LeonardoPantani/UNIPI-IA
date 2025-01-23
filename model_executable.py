@@ -51,7 +51,7 @@ FEATURE_ORDER = [
     'first_directory_length',
     'top_level_domain_length',
     'num_letters',
-    'num_subdomains'
+    'num_domains'
 ]
 
 def is_valid_url(url):
@@ -81,7 +81,7 @@ def extract_features(url):
         'first_directory_length': extract_feature_first_directory_length(url),
         'top_level_domain_length': extract_feature_top_level_domain_length(url),
         'num_letters': extract_feature_num_letters(url),
-        'num_subdomains': extract_feature_num_subdomains(url)
+        'num_domains': extract_feature_num_subdomains(url)
     }
 
 def predict_url(url, model_path='random_forest_model.joblib'):

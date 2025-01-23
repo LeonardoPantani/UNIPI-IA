@@ -117,7 +117,7 @@ def extract_feature_first_directory_length(url: str) -> int:
         return 0
 
     segments = path.split('/')
-    # Rimuovi segmenti vuoti causati da slash multipli o slash finali
+
     segments = [s for s in segments if s]
 
     if not segments:
@@ -139,6 +139,5 @@ def extract_feature_top_level_domain_length(url: str) -> int:
 def extract_feature_num_subdomains(url: str) -> int:
     parsed_url = urlparse(url)
     hostname = parsed_url.netloc
-    # Rimuovi 'www.' se presente per evitare di contarlo come sottodominio
     hostname = hostname.lstrip('www.')
     return hostname.count('.')
