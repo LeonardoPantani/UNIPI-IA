@@ -3,6 +3,7 @@
 import joblib
 import pandas as pd
 from urllib.parse import urlparse
+suppress_warnings = True
 
 from utils.features_extractors import (
     extract_feature_count_dash,
@@ -92,12 +93,21 @@ def predict_url(url, model_path='random_forest_model.joblib'):
     prediction = model.predict(features_df)
     return prediction[0]
 
+def main():
+    print("URL Analyzer")
+    while True:
+        url = input("Enter the URL to analyze (or type 'exit' to quit): ")
+        
+        if url.lower() == 'exit':
+            break
+
+        try:
+            result = predict_url(url)
+            print(f"> Prediction for {url}: {result}")
+        except Exception as e:
+            print(f"[!] Error occurred: {str(e)}")
+
+        print("------------------------")
 
 if __name__ == "__main__":
-    url = input("Enter the URL to analyze: ")
-    
-    try:
-        result = predict_url(url)
-        print(f"> Prediction for {url}: {result}")
-    except Exception as e:
-        print(f"[!] Error occurred: {str(e)}")
+    main()
