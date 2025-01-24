@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
+import sys
+from urllib.parse import urlparse
 import joblib
 import pandas as pd
-from urllib.parse import urlparse
-suppress_warnings = True
 
 from utils.features_extractors import (
     extract_feature_count_dash,
@@ -85,8 +85,7 @@ def extract_features(url):
         'num_domains': extract_feature_num_subdomains(url)
     }
 
-def predict_url(url, model_path='random_forest_model.joblib'):
-    model = joblib.load(model_path)
+def predict_url(url, model):
     features_dict = extract_features(url)
     row = [features_dict[col] for col in FEATURE_ORDER]
     features_df = pd.DataFrame([row], columns=FEATURE_ORDER)
@@ -95,19 +94,27 @@ def predict_url(url, model_path='random_forest_model.joblib'):
 
 def main():
     print("URL Analyzer")
+    try:
+        model = joblib.load('random_forest_model.joblib')
+    except FileNotFoundError:
+        print("[!] Cannot find model. Save the model as a file called 'random_forest_model.joblib' and execute this program again")
+        sys.exit(1)
+
     while True:
-        url = input("Enter the URL to analyze (or type 'exit' to quit): ")
-        
-        if url.lower() == 'exit':
-            break
-
         try:
-            result = predict_url(url)
-            print(f"> Prediction for {url}: {result}")
-        except Exception as e:
-            print(f"[!] Error occurred: {str(e)}")
+            url = input("Enter the URL to analyze ('exit' or CTRL+C to exit): ")
+            if url.lower() == 'exit':
+                break
+            try:
+                result = predict_url(url, model)
+                print(f"> Prediction for {url}: {result}")
+            except Exception as e:
+                print(f"[!] Error occurred: {str(e)}")
+            print("------------------------")
 
-        print("------------------------")
+        except KeyboardInterrupt:
+            print()
+            break
 
 if __name__ == "__main__":
     main()

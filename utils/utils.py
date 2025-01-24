@@ -1,10 +1,11 @@
 import collections
 from collections import Counter
-from imblearn.under_sampling import RandomUnderSampler
-from imblearn.over_sampling import RandomOverSampler
+
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from imblearn.over_sampling import RandomOverSampler
+from imblearn.under_sampling import RandomUnderSampler
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, f1_score, roc_auc_score
 from sklearn.model_selection import StratifiedKFold
 

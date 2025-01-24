@@ -1,6 +1,7 @@
-import re
 import math
-from urllib.parse import urlparse, parse_qs
+import re
+from urllib.parse import parse_qs, urlparse
+
 
 def extract_feature_ip_use(url: str) -> int:
     ipv4_pattern = r'(?:\d{1,3}\.){3}\d{1,3}'
@@ -67,15 +68,12 @@ def extract_feature_directory_num(url: str) -> int:
     path_parts = [p for p in path.split('/') if p]
     return len(path_parts)
 
-# Corretta: Conta i domini "embeddati" contando i domini e non gli schemi
 def extract_feature_embed_domain_number(url: str) -> int:
     parsed_url = urlparse(url)
-    # Considero solo la parte del percorso e della query
     path_and_query = parsed_url.path
     if parsed_url.query:
         path_and_query += "?" + parsed_url.query
     
-    # Trovo tutti i domini "embeddati" usando una regex
     embedded_domains = re.findall(r'(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}', path_and_query)
     
     return len(embedded_domains)
@@ -109,7 +107,6 @@ def extract_feature_hostname_length(url: str) -> int:
     parsed = urlparse(url)
     return len(parsed.netloc)
 
-# Corretta: Calcola la lunghezza del primo segmento del path
 def extract_feature_first_directory_length(url: str) -> int:
     parsed = urlparse(url)
     path = parsed.path
