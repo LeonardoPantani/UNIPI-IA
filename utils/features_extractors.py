@@ -135,7 +135,6 @@ def extract_feature_top_level_domain_length(url: str) -> int:
     tld = parts[-1]
     return len(tld)
 
-# Nuova funzione: Calcola il numero di sottodomini
 def extract_feature_num_subdomains(url: str) -> int:
     parsed_url = urlparse(url)
     hostname = parsed_url.netloc
